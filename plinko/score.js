@@ -1,5 +1,10 @@
+const _ = require('lodash');
+const outputs = [];
+
 function onScoreUpdate(dropPosition, bounciness, size, bucketLabel) {
-  // Ran every time a balls drops into a bucket
+    outputs.push([dropPosition, bounciness, size, bucketLabel]);
+    console.log(outputs);
+    _.sortBy(outputs, row => row[3])
 }
 
 function runAnalysis() {
