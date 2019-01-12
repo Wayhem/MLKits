@@ -6,12 +6,17 @@ function onScoreUpdate(dropPosition, bounciness, size, bucketLabel) {
 }
 
 function runAnalysis() {
-    let [testSet, traningSet] = splitDataset(outputs, 10); 
-    
+    const testSize = 10;
+    let [testSet, traningSet] = splitDataset(outputs, testSize); 
+    let counter = 0;
     testSet.forEach(element => {
         const bucket = knn(traningSet, element[0]);
         console.log(`The prediction is bucket #${bucket}, tested element bucket is #${element[3]}`)
+        if (bucket === element[3]){
+            counter++;
+        }
     });
+    console.log(`Accuracy: ${(counter/testSize)*100}%`);
 }
 
 function distance(point, predictionPoint) {
