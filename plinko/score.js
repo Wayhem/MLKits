@@ -20,7 +20,7 @@ function runAnalysis() {
     _.range(1, 20).forEach(k => {
         const results = _.chain(testSet)
         .filter(testPoint => {
-            return knn(traningSet, testPoint[0], k) === testPoint[3];
+            return knn(traningSet, _.initial(testPoint), k) === testPoint[3];
         })
         .size()
         .divide(testSize)
@@ -30,8 +30,12 @@ function runAnalysis() {
     });
 }
 
-function distance(point, predictionPoint) {
-	return Math.abs(point - predictionPoint)
+function distance(pointA, pointB) {
+    return _.chain(pointA)
+        .zip(pointB)
+        .map(([a, b]) => (a-b) ** 2)
+        .sum()
+        .value() ** 0.5;
 }
 
 function splitDataset(data, testCount) {
@@ -45,7 +49,12 @@ function splitDataset(data, testCount) {
 
 function knn(data, point, k) {
     return _.chain(data)
-        .map(row => [distance(row[0], point), row[3]])
+        .map(row => {
+            return [
+                distance(_.initial(row), point), 
+                _.last(row)
+            ]
+        })
         .sortBy(row => row[0])
         .slice(0, k)
         .countBy(row => row[1])
