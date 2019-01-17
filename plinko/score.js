@@ -7,16 +7,7 @@ function onScoreUpdate(dropPosition, bounciness, size, bucketLabel) {
 function runAnalysis() {
     const testSize = 100;
     let [testSet, traningSet] = splitDataset(outputs, testSize); 
-    // REFACTORED THIS SECTION TO LODASH FUNCTIONS.
-    // let counter = 0;
-    // testSet.forEach(element => {
-    //     const bucket = knn(traningSet, element[0]);
-    //     console.log(`The prediction is bucket #${bucket}, tested element bucket is #${element[3]}`)
-    //     if (bucket === element[3]){
-    //         counter++;
-    //     }
-    // });
-    // console.log(`Accuracy: ${(counter/testSize)*100}%`);
+    
     _.range(1, 20).forEach(k => {
         const results = _.chain(testSet)
         .filter(testPoint => {
@@ -64,4 +55,21 @@ function knn(data, point, k) {
         .first()
         .parseInt()
         .value()
+}
+
+function minMax(data, featureCount) {
+    const clonedData = _.cloneDeep(data);
+
+    for (i=0; i<featureCount;i++){
+        const column = clonedData.map(row => row[i]);
+
+        const min = _.min(column);
+        const max = _.max(column);
+        
+        for (j=0; j<clonedData.length;j++) {
+            clonedData[j][i] = (clonedData[j][i] - min) / (max - min);
+        }
+    }
+
+    return clonedData;
 }
